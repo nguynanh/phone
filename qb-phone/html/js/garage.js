@@ -42,10 +42,8 @@ SetupGarageVehicles = function(Vehicles) {
             const bodyHealth = vehicle.body !== undefined ? `${Math.ceil(vehicle.body / 10)}%` : 'N/A';
             const garageLocation = vehicle.garage ? `In ${vehicle.garage}` : 'N/A';
 
-            // ==========================================================
-            // *** LOGIC MÀU SẮC ĐÚNG: Xe ở ngoài (state 0) màu đỏ, còn lại màu xanh ***
-            const statusClass = vehicle.state === 0 ? 'status-out' : 'status-in';
-            // ==========================================================
+            // DÒNG SỬA LỖI ĐÚNG - PHẢI NẰM BÊN TRONG VÒNG LẶP NÀY
+            const statusClass = vehicle.state ? 'status-in' : 'status-out';
 
             // Tạo thẻ HTML mới với class trạng thái đã được thêm vào
             const element = `
