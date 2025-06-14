@@ -240,7 +240,7 @@ body {
     height: 2.3vh;
     width: 100%;
     margin: 0 auto;
-    top: 2vh;
+    top: 0%; /* THAY ĐỔI Ở ĐÂY */
     transform: translateY(-50%);
     border-radius: 0.8vh;
     transition: .15s;
@@ -253,9 +253,10 @@ body {
     width: 10vh;
     background-color: white;
     border-radius: 0.8vh;
-    top: 80%;
+    top: 0%; /* THAY ĐỔI Ở ĐÂY */
     transform: translateY(-50%);
     margin: 0px auto;
+    margin-right: 2vh;
     transition: all 0.1s ease 0s;
 }
 
