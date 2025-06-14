@@ -1,10 +1,10 @@
-// -- [BẮT ĐẦU CHỈNH SỬA] --
-// THÊM TẤT CẢ CÁC MÃ SPAWN XE MOD CỦA BẠN VÀO ĐÂY.
+// -- [BẮT ĐẦU KHAI BÁO BIẾN QUAN TRỌNG] --
+// Đảm bảo phần này luôn có ở đầu tệp.
 const moddedVehicleList = [
     // "cheburek", // ví dụ
     // "italirsx", // ví dụ
 ];
-// -- [KẾT THÚC CHỈNH SỬA] --
+// -- [KẾT THÚC KHAI BÁO] --
 
 // Hàm tìm kiếm xe khi người dùng gõ vào ô tìm kiếm
 $("#garage-search-input").on("keyup", function() {
@@ -43,8 +43,8 @@ SetupGarageVehicles = function(Vehicles) {
             const garageLocation = vehicle.garage ? `In ${vehicle.garage}` : 'N/A';
 
             // ==========================================================
-            // *** DÒNG ĐÃ SỬA: Thay === bằng == để so sánh linh hoạt ***
-            const statusClass = vehicle.state = 1 ? 'status-in' : 'status-out';
+            // *** LOGIC MÀU SẮC ĐÚNG: Xe ở ngoài (state 0) màu đỏ, còn lại màu xanh ***
+            const statusClass = vehicle.state === 0 ? 'status-out' : 'status-in';
             // ==========================================================
 
             // Tạo thẻ HTML mới với class trạng thái đã được thêm vào
