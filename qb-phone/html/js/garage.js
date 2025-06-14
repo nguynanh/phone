@@ -1,59 +1,83 @@
-let veh
+// -- [BẮT ĐẦU CHỈNH SỬA] --
+// THÊM TẤT CẢ CÁC MÃ SPAWN XE MOD CỦA BẠN VÀO ĐÂY.
+const moddedVehicleList = [
+    // "cheburek", // ví dụ
+    // "italirsx", // ví dụ
+];
+// -- [KẾT THÚC CHỈNH SỬA] --
 
-$(document).on('click', '.garage-vehicle', function(e){
-    e.preventDefault();
-
-    $(".garage-homescreen").animate({
-        left: 30+"vh"
-    }, 200);
-    $(".garage-detailscreen").animate({
-        left: 0+"vh"
-    }, 200);
-
-    var Id = $(this).attr('id');
-    var VehData = $("#"+Id).data('VehicleData');
-    veh = VehData
-    SetupDetails(VehData);
+// Hàm tìm kiếm xe khi người dùng gõ vào ô tìm kiếm
+$("#garage-search-input").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $(".garage-vehicle-list .garage-card").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    });
 });
 
-$(document).on('click', '#track-vehicle', function(e){
-    e.preventDefault()
-    $.post("https://qb-phone/track-vehicle", JSON.stringify({
-        veh: veh,
-    }));
-});
-
-
-$(document).on('click', '#return-button', function(e){
-    e.preventDefault();
-
-    $(".garage-homescreen").animate({
-        left: 00+"vh"
-    }, 200);
-    $(".garage-detailscreen").animate({
-        left: -30+"vh"
-    }, 200);
-});
-
+/**
+ * Hàm chính để thiết lập và hiển thị danh sách xe trong gara
+ * @param {Array} Vehicles - Dữ liệu tất cả các xe của người chơi
+ */
 SetupGarageVehicles = function(Vehicles) {
-    $(".garage-vehicles").html("");
-    if (Vehicles != null) {
-        $.each(Vehicles, function(i, vehicle){
-            var Element = '<div class="garage-vehicle" id="vehicle-'+i+'"><span class="garage-vehicle-firstletter">'+vehicle.brand.charAt(0)+'</span> <span class="garage-vehicle-name">'+vehicle.fullname+'</span> </div>';
+    $(".garage-vehicle-list").html(""); // Luôn xóa danh sách cũ trước khi tạo mới
 
-            $(".garage-vehicles").append(Element);
-            $("#vehicle-"+i).data('VehicleData', vehicle);
+    if (Vehicles && Vehicles.length > 0) {
+        Vehicles.sort((a, b) => a.fullname.localeCompare(b.fullname));
+
+        $.each(Vehicles, function(i, vehicle) {
+            
+            // --- LOGIC LẤY ẢNH ---
+            let vehicleImageHTML;
+            const model = vehicle.model.toLowerCase();
+
+            if (moddedVehicleList.includes(model)) {
+                vehicleImageHTML = `<img src="./images/${model}.png" onerror="this.onerror=null; this.src='./img/default.png';">`;
+            } else {
+                vehicleImageHTML = `<img src="https://docs.fivem.net/vehicles/${model}.webp" onerror="this.onerror=null; this.src='./img/default.png';">`;
+            }
+
+            // Lấy và định dạng dữ liệu xe
+            const fuelLevel = vehicle.fuel !== undefined ? `${Math.ceil(vehicle.fuel)}%` : 'N/A';
+            const engineHealth = vehicle.engine !== undefined ? `${Math.ceil(vehicle.engine / 10)}%` : 'N/A';
+            const bodyHealth = vehicle.body !== undefined ? `${Math.ceil(vehicle.body / 10)}%` : 'N/A';
+            const garageLocation = vehicle.garage ? `In ${vehicle.garage}` : 'N/A';
+
+            // ==========================================================
+            // *** DÒNG ĐÃ SỬA: Thay === bằng == để so sánh linh hoạt ***
+            const statusClass = vehicle.state = 1 ? 'status-in' : 'status-out';
+            // ==========================================================
+
+            // Tạo thẻ HTML mới với class trạng thái đã được thêm vào
+            const element = `
+                <div class="garage-card ${statusClass}" data-plate="${vehicle.plate}">
+                    <div class="garage-card-image">
+                        ${vehicleImageHTML}
+                    </div>
+                    <div class="garage-card-details">
+                        <div class="vehicle-name">${vehicle.fullname}</div>
+                        <div class="vehicle-info">
+                            Fuel: ${fuelLevel}<br>
+                            Engine: ${engineHealth} | Body: ${bodyHealth}<br>
+                            Garage: ${garageLocation}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            $(".garage-vehicle-list").append(element);
+            $(`[data-plate="${vehicle.plate}"]`).data('VehicleData', vehicle);
         });
+    } else {
+        $(".garage-vehicle-list").html("<p style='color: #8f8f8f; text-align: center; margin-top: 5vh;'>You have no vehicles.</p>");
     }
 }
 
-SetupDetails = function(data) {
-    $(".vehicle-brand").find(".vehicle-answer").html(data.brand);
-    $(".vehicle-model").find(".vehicle-answer").html(data.model);
-    $(".vehicle-plate").find(".vehicle-answer").html(data.plate);
-    $(".vehicle-garage").find(".vehicle-answer").html(data.garage);
-    $(".vehicle-status").find(".vehicle-answer").html(data.state);
-    $(".vehicle-fuel").find(".vehicle-answer").html(Math.ceil(data.fuel)+"%");
-    $(".vehicle-engine").find(".vehicle-answer").html(Math.ceil(data.engine / 10)+"%");
-    $(".vehicle-body").find(".vehicle-answer").html(Math.ceil(data.body / 10)+"%");
-}
+$(document).on('click', '#track-vehicle-button', function(e){
+    e.preventDefault();
+    let vehData = $(this).closest('.garage-card').data('VehicleData');
+    if (vehData) {
+        $.post("https://qb-phone/track-vehicle", JSON.stringify({
+            veh: vehData,
+        }));
+    }
+});
