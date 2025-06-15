@@ -94,7 +94,7 @@
 
 
 .garage-card-image {
-    width: 45%;
+    width: 35%;
     height: 100%;
     background-size: cover;
     background-position: center;
@@ -110,7 +110,7 @@
 }
 
 .garage-card-details {
-    width: 55%;
+    width: 65%;
     height: 100%;
     padding: 1.2vh 1.5vh;
     box-sizing: border-box;
@@ -191,23 +191,10 @@
 
 .garage-detail-info {
     color: white;
-    overflow-y: auto; /* Cho phép cuộn khi nội dung quá dài */
-    flex-grow: 1; /* Giúp khu vực này lấp đầy không gian trống */
-    padding-right: 5px; /* Thêm khoảng trống nhỏ cho thanh cuộn */
-}
-
-/* Tùy chỉnh thanh cuộn cho đẹp hơn */
-.garage-detail-info::-webkit-scrollbar {
-    width: 5px;
-}
-
-.garage-detail-info::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.garage-detail-info::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding-right: 5px;
+   
 }
 
 .garage-detail-info p {
@@ -222,4 +209,44 @@
     float: right;
     font-weight: normal;
 }
-/* END NEW */
+
+.garage-detail-info::-webkit-scrollbar {
+    display: none;
+}
+
+.garage-detail-mods-container {
+    padding: 1vh;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 5px;
+    margin-top: 1vh;
+}
+
+.garage-detail-mods-container p {
+    margin: 0;
+    padding: 0;
+}
+
+#detail-vehicle-mods-list {
+    margin-top: 0.8vh;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5vh; /* Khoảng cách giữa các món đồ độ */
+}
+
+.mod-item, .mod-item-none {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 0.8vh 1.2vh;
+    border-radius: 4px;
+    font-size: 1.3vh;
+}
+
+.mod-item-none {
+    text-align: center;
+    color: #a0a0a0;
+}
+
+.mod-value {
+    float: right;
+    font-weight: normal;
+    color: #a0a0a0;
+}
