@@ -10,6 +10,50 @@ const moddedVehicleList = [
 ];
 // -- [KẾT THÚC KHAI BÁO] --
 
+// Thêm danh sách các modId mà bạn muốn hiển thị
+// Các ID này phải khớp với các key số trong modNames
+const modsToDisplay = [
+    "11", 
+    "16", 
+    "18", 
+    "13", 
+    "14", 
+    "15", 
+];
+
+// Ánh xạ các tên khóa từ database sang modId số
+const modKeyToIdMap = {
+    "modSpoilers": "0",
+    "modFrontBumper": "1",
+    "modRearBumper": "2",
+    "modSideSkirt": "3",
+    "modExhaust": "4",
+    "modFrame": "5",
+    "modGrille": "6",
+    "modHood": "7",
+    "modFender": "8",
+    "modRightFender": "9",
+    "modRoof": "10", // Có thể cần phân biệt rõ hơn nếu có "Sơn nóc" riêng
+    "modEngine": "11",
+    "modBrakes": "12",
+    "modTransmission": "13",
+    "modHorns": "14",
+    "modSuspension": "15",
+    "modArmor": "16",
+    "modTurbo": "18",
+    "modXenon": "22",
+    "wheels": "23", // Ánh xạ tới Mâm xe
+    "tyreSmokeColor": "27", // Màu khói lốp
+    "neonColor": "28", // Màu gầm
+    "interiorColor": "38", // Màu nội thất
+    "color1": "46", // Màu sơn chính
+    "color2": "46", // Màu sơn phụ
+    "pearlescentColor": "46", // Màu ánh kim
+    "modLivery": "48", // Họa tiết
+    // Thêm các ánh xạ khác nếu cần
+};
+
+
 // Hàm tìm kiếm xe khi người dùng gõ vào ô tìm kiếm
 $("#garage-search-input").on("keyup", function() {
     var value = $(this).val().toLowerCase();
@@ -29,7 +73,7 @@ SetupGarageVehicles = function(Vehicles) {
         Vehicles.sort((a, b) => a.fullname.localeCompare(b.fullname));
 
         $.each(Vehicles, function(i, vehicle) {
-            
+
             // --- LOGIC LẤY ẢNH ---
             let vehicleImageHTML;
             const model = vehicle.model.toLowerCase();
@@ -37,7 +81,9 @@ SetupGarageVehicles = function(Vehicles) {
             if (moddedVehicleList.includes(model)) {
                 vehicleImageHTML = `<img src="./images/${model}.png" onerror="this.onerror=null; this.src='./img/default.png';">`;
             } else {
-                vehicleImageHTML = `<img src="https://docs.fivem.net/vehicles/${model}.webp" onerror="this.onerror=null; this.src='./img/default.png';">`;
+                // Sử dụng đường dẫn trực tiếp và thêm thẻ <img> để xử lý lỗi tải ảnh
+                let imageUrl = `https://docs.fivem.net/vehicles/${model}.webp`;
+                vehicleImageHTML = `<img src="${imageUrl}" onerror="this.onerror=null; this.src='./img/default.png';">`;
             }
 
             // Lấy và định dạng dữ liệu xe
@@ -117,24 +163,50 @@ $(document).on('click', '.garage-card', function(e){
         const modsListContainer = $('#detail-vehicle-mods-list');
         modsListContainer.empty(); // Xóa danh sách cũ trước khi thêm mới
 
+        let hasRelevantMods = false; // Biến cờ để kiểm tra xem có mod nào được hiển thị không
+
         if (vehicleData.mods && typeof vehicleData.mods === 'object' && Object.keys(vehicleData.mods).length > 0) {
-            for (const modId in vehicleData.mods) {
-                const modLevel = vehicleData.mods[modId];
-                const modName = modNames[modId] || `Đồ độ #${modId}`;
-                let modText = '';
+            for (const key in vehicleData.mods) { // 'key' sẽ là "modEngine", "modArmor", v.v.
+                const modId = modKeyToIdMap[key]; // Lấy ID số từ khóa chuỗi
 
-                if (modId == "18" || modId == "22") { // Turbo và Xenon chỉ có bật/tắt
-                     modText = `${modName}: <span class="mod-value">Đã lắp</span>`;
-                } else if (modLevel >= 0) {
-                    modText = `${modName}: <span class="mod-value">Cấp ${modLevel + 1}</span>`;
-                }
+                // Chỉ xử lý nếu có ánh xạ và modId nằm trong danh sách muốn hiển thị
+                if (modId && modsToDisplay.includes(modId)) {
+                    const modValue = vehicleData.mods[key]; // Giá trị thực tế của mod (cấp độ hoặc boolean)
+                    const modName = modNames[modId] || `Đồ độ #${modId}`; // Sử dụng ID số để lấy tên
+                    let modText = '';
 
-                if (modText) {
-                    modsListContainer.append(`<div class="mod-item">${modText}</div>`);
+                    if (modId === "18" || modId === "22") { // Turbo và Xenon (on/off)
+                        if (modValue === 1 || modValue === true) {
+                            modText = `${modName}: <span class="mod-value">Đã lắp</span>`;
+                        } else {
+                            continue; // Không hiển thị nếu không lắp hoặc giá trị -1
+                        }
+                    } else if (["27", "28", "38", "46"].includes(modId)) { // Các mod màu sắc đặc biệt
+                        if (Array.isArray(modValue)) { // Mảng RGB cho màu khói lốp, màu gầm
+                             modText = `${modName}: <span class="mod-value">RGB(${modValue[0]}, ${modValue[1]}, ${modValue[2]})</span>`;
+                        } else if (modValue >= 0) { // Chỉ số màu
+                            modText = `${modName}: <span class="mod-value">Đã thiết lập (ID: ${modValue})</span>`;
+                        } else {
+                            continue; // Không hiển thị nếu -1 hoặc không cài đặt
+                        }
+                    } else if (modValue >= 0) { // Các mod dựa trên cấp độ
+                        modText = `${modName}: <span class="mod-value">Cấp ${modValue + 1}</span>`;
+                    } else {
+                        // Không hiển thị các mod có giá trị -1 (không lắp/mặc định) trừ khi được chỉ định
+                        continue;
+                    }
+
+                    if (modText) {
+                        modsListContainer.append(`<div class="mod-item">${modText}</div>`);
+                        hasRelevantMods = true; // Đánh dấu là có mod được hiển thị
+                    }
                 }
             }
-        } else {
-            modsListContainer.append(`<div class="mod-item-none">Không có đồ độ</div>`);
+        }
+
+        // Nếu không có mod nào phù hợp được tìm thấy hoặc hiển thị
+        if (!hasRelevantMods) {
+            modsListContainer.append(`<div class="mod-item-none">Không có đồ độ được hỗ trợ hiển thị</div>`);
         }
 
         // Hiển thị màn hình chi tiết
