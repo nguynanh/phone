@@ -171,8 +171,20 @@ Config.PhoneApplications = {
         slot = 15,
         Alerts = 0,
     },
+    ['showroom'] = {
+    app = 'showroom',
+    color = '#4A90E2', -- Một màu xanh đẹp mắt
+    icon = 'fas fa-car-side',
+    tooltipText = 'Showroom',
+    tooltipPos = 'bottom',
+    job = false,
+    blockedjobs = {},
+    slot = 17,
+    Alerts = 0,
+},
 }
 Config.MaxSlots = 20
+
 
 Config.StoreApps = {
     ['territory'] = {

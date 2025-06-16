@@ -175,6 +175,10 @@ $(document).on('click', '.phone-application', function(e){
                     $.post('https://qb-phone/SetupGarageVehicles', JSON.stringify({}), function(Vehicles){
                         SetupGarageVehicles(Vehicles);
                     })
+                } else if (PressedApplication == "showroom") { 
+                   $.post('https://qb-phone/GetSalesVehicles', JSON.stringify({}), function(vehicles){
+                       SetupShowroomVehicles(vehicles);
+                    });
                 } else if (PressedApplication == "crypto") {
                     $.post('https://qb-phone/GetCryptoData', JSON.stringify({
                         crypto: "qbit",
@@ -229,8 +233,7 @@ $(document).on('click', '.phone-application', function(e){
                     })
                     QB.Phone.Functions.Close();
                 }
-
-                
+      
             }
         }
     } else {

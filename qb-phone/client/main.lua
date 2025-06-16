@@ -2160,3 +2160,26 @@ CreateThread(function()
         end
     end
 end)
+-- Thêm vào cuối tệp client/main.lua
+RegisterNUICallback('GetSalesVehicles', function(_, cb)
+    -- Gọi trực tiếp đến callback của qb-vehiclesales để lấy danh sách xe
+    QBCore.Functions.TriggerCallback('qb-occasions:server:getVehicles', function(vehicles)
+        local salesVehicles = {}
+        if vehicles then
+            for _, vehicleData in ipairs(vehicles) do
+                -- Bổ sung thông tin tên và danh mục từ QBCore.Shared.Vehicles
+                local vehicleInfo = QBCore.Shared.Vehicles[vehicleData.model]
+                if vehicleInfo then
+                    vehicleData.name = vehicleInfo.name
+                    vehicleData.category = vehicleInfo.category
+                else
+                    vehicleData.name = vehicleData.model:gsub("^%l", string.upper)
+                    vehicleData.category = 'Không xác định'
+                end
+                table.insert(salesVehicles, vehicleData)
+            end
+        end
+        -- Gửi danh sách đã được xử lý hoàn chỉnh cho UI
+        cb(salesVehicles)
+    end)
+end)
