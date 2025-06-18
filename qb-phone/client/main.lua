@@ -2176,6 +2176,10 @@ RegisterNUICallback('GetSalesVehicles', function(_, cb)
                     vehicleData.name = vehicleData.model:gsub("^%l", string.upper)
                     vehicleData.category = 'Không xác định'
                 end
+                -- Bổ sung thông tin người bán nếu có từ server
+                vehicleData.sellerName = vehicleData.sellerName or 'Không xác định' -- Đảm bảo có giá trị mặc định
+                vehicleData.sellerPhone = vehicleData.sellerPhone or 'Không xác định' -- Đảm bảo có giá trị mặc định
+
                 table.insert(salesVehicles, vehicleData)
             end
         end

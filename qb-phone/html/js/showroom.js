@@ -1,3 +1,8 @@
+// qb-phone/html/js/showroom.js
+
+var ShowroomSearchActive = false; // Biến để theo dõi trạng thái thanh tìm kiếm
+var OpenedVehicleDetail = null; // Biến để theo dõi xe đang được xem chi tiết
+
 $(document).ready(function() {
     // Khai báo các hằng số để xử lý đồ độ
     const modNames = {
@@ -16,14 +21,27 @@ $(document).ready(function() {
         "modSuspension": "15",
         "modTurbo": "18"
     };
+    // Các modId cần hiển thị (đã được lọc ở server, nhưng có thể lọc lại ở client nếu cần)
     const modsToDisplay = ["11", "13", "16", "18"];
 
-    // Hàm tìm kiếm xe
+    // Hàm tìm kiếm xe khi người dùng gõ vào ô tìm kiếm
     $("#showroom-search-input").on("keyup", function() {
         var value = $(this).val().toLowerCase();
         $(".showroom-vehicle-list .showroom-card").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
         });
+    });
+
+    // Xử lý nút tìm kiếm (nếu có icon tìm kiếm riêng)
+    $(document).on('click', '.showroom-search-icon', function(e){
+        e.preventDefault();
+        if (!ShowroomSearchActive) {
+            $("#showroom-search-input").fadeIn(150);
+            ShowroomSearchActive = true;
+        } else {
+            $("#showroom-search-input").fadeOut(150);
+            ShowroomSearchActive = false;
+        }
     });
 
     // Hàm thiết lập danh sách xe
@@ -36,12 +54,19 @@ $(document).ready(function() {
                 let imageUrl = `https://docs.fivem.net/vehicles/${model}.webp`;
                 let vehicleImageHTML = `<img src="${imageUrl}" onerror="this.onerror=null; this.src='./img/default.png';">`;
                 const formattedPrice = vehicleData.price.toLocaleString('en-US');
+
+                // Thêm thông tin người bán vào card list
+                const sellerName = vehicleData.sellerName || 'Không xác định'; // Đảm bảo có giá trị mặc định
+                const sellerPhone = vehicleData.sellerPhone || 'Không xác định'; // Đảm bảo có giá trị mặc định
+                const sellerInfoHTML = `<div class="vehicle-info">Người bán: ${sellerName} (${sellerPhone})</div>`;
+
                 const element = `
                     <div class="showroom-card" data-plate="${vehicleData.plate}">
                         <div class="showroom-card-image">${vehicleImageHTML}</div>
                         <div class="showroom-card-details">
                             <div class="vehicle-name">${vehicleData.name}</div>
                             <div class="vehicle-info">Giá: $${formattedPrice}</div>
+                            ${sellerInfoHTML}
                         </div>
                     </div>`;
                 $(".showroom-vehicle-list").append(element);
@@ -58,6 +83,7 @@ $(document).ready(function() {
         const vehicleData = $(this).data('VehicleData');
 
         if (vehicleData) {
+            OpenedVehicleDetail = vehicleData; // Lưu trữ dữ liệu xe đang mở
             let model = vehicleData.model.toLowerCase();
             let imageUrl = `https://docs.fivem.net/vehicles/${model}.webp`;
 
@@ -67,6 +93,10 @@ $(document).ready(function() {
             $('#detail-vehicle-category-showroom').text(vehicleData.category || 'Không xác định');
             $('#detail-vehicle-price-showroom').text(`$${vehicleData.price.toLocaleString('en-US')}`);
             $('#detail-vehicle-description-showroom').text(vehicleData.description || 'Không có mô tả.');
+
+            // Thêm thông tin người bán vào chi tiết xe
+            $('#detail-vehicle-seller-name-showroom').text(vehicleData.sellerName || 'Không xác định');
+            $('#detail-vehicle-seller-phone-showroom').text(vehicleData.sellerPhone || 'Không xác định');
 
             // Xử lý và hiển thị thông tin đồ độ
             const modsListContainer = $('#detail-vehicle-mods-list-showroom');
@@ -87,7 +117,7 @@ $(document).ready(function() {
                             const modName = modNames[modId];
                             let modText = '';
 
-                            if (modId === "18") { // **BƯỚC SỬA LỖI TURBO**
+                            if (modId === "18") { // Turbo
                                 // Chỉ hiển thị "Đã lắp" nếu giá trị là true hoặc 1
                                 if (modValue === true || modValue === 1) {
                                     modText = `${modName}: <span class="mod-value">Đã lắp</span>`;
@@ -109,6 +139,12 @@ $(document).ready(function() {
                 modsListContainer.append(`<div class="mod-item-none-showroom">Không có thông số.</div>`);
             }
 
+            // Ẩn thanh tìm kiếm nếu đang mở
+            if (ShowroomSearchActive) {
+                $("#showroom-search-input").fadeOut(150);
+                ShowroomSearchActive = false;
+            }
+
             $('#showroom-vehicle-detail-view').css('display', 'flex').hide().fadeIn(200);
             $('.showroom-app-header, .showroom-search, .showroom-vehicle-list').fadeOut(200);
         }
@@ -117,7 +153,45 @@ $(document).ready(function() {
     // Xử lý sự kiện khi bấm nút quay lại
     $(document).on('click', '#showroom-detail-back-button', function(e){
         e.preventDefault();
-        $('#showroom-vehicle-detail-view').fadeOut(200, function(){ $(this).css('display', 'none'); });
+        $('#showroom-vehicle-detail-view').fadeOut(200, function(){
+            $(this).css('display', 'none');
+            OpenedVehicleDetail = null; // Xóa dữ liệu xe đang mở
+        });
         $('.showroom-app-header, .showroom-search, .showroom-vehicle-list').fadeIn(200);
+    });
+
+    // Bạn có thể thêm các sự kiện khác ở đây, ví dụ: nút mua xe, gọi người bán, v.v.
+    // Ví dụ: Gọi người bán
+    $(document).on('click', '#showroom-call-seller-button', function(e){
+        e.preventDefault();
+        if (OpenedVehicleDetail && OpenedVehicleDetail.sellerPhone !== 'Không xác định') {
+            // Logic để gọi điện thoại
+            // Cần gửi sự kiện đến client/main.lua để thực hiện cuộc gọi
+            $.post('https://qb-phone/CallContact', JSON.stringify({
+                ContactData: {
+                    number: OpenedVehicleDetail.sellerPhone,
+                    name: OpenedVehicleDetail.sellerName
+                },
+                Anonymous: QB.Phone.Data.AnonymousCall, // Lấy trạng thái cuộc gọi ẩn danh từ phone data
+            }), function(status){
+                if (status.IsOnline) {
+                    if (status.CanCall) {
+                        if (!status.InCall) {
+                            QB.Phone.Notifications.Add("fas fa-phone", "Phone", `Đang gọi ${OpenedVehicleDetail.sellerName}!`, "#04b543", 2000);
+                            // Logic chuyển sang màn hình cuộc gọi nếu cần
+                            QB.Phone.Functions.Close(); // Đóng phone UI
+                        } else {
+                            QB.Phone.Notifications.Add("fas fa-phone", "Phone", "Bạn đang bận cuộc gọi khác!", "error", 2000);
+                        }
+                    } else {
+                        QB.Phone.Notifications.Add("fas fa-phone", "Phone", "Người này đang bận!", "error", 2000);
+                    }
+                } else {
+                    QB.Phone.Notifications.Add("fas fa-phone", "Phone", "Người này hiện không online hoặc không có sẵn!", "error", 2000);
+                }
+            });
+        } else {
+            QB.Phone.Notifications.Add("fas fa-phone", "Showroom", "Không có thông tin liên hệ người bán!", "error", 2000);
+        }
     });
 });

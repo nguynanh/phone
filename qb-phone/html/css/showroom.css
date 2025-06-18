@@ -294,3 +294,23 @@
     font-weight: bold;
     color: #ffffff; /* Màu xanh dương cho cấp độ/trạng thái */
 }
+
+.showroom-card-details .vehicle-info {
+    font-size: 1.2vh;
+    color: #f1f1f1; /* Cho màu chữ sáng hơn một chút trên nền màu */
+    margin-top: 0.5vh;
+    line-height: 1.5vh;
+}
+
+/* Thêm kiểu cho thông tin người bán trong chi tiết */
+#showroom-vehicle-detail-view .showroom-detail-info p {
+    font-size: 1.5vh;
+    margin: 1vh 0;
+    padding: 1vh;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+
+#showroom-vehicle-detail-view .showroom-detail-info strong {
+    color: #b0c4de; /* Màu khác cho tiêu đề mạnh */
+}
