@@ -2,8 +2,8 @@ Config = {}
 Config.EnableAutoRotation = true -- Đặt là true để bật tính năng tự động đổi xe, false để tắt
 -- 'daily': Thay đổi vào lúc 2 giờ sáng mỗi ngày.
 -- 'interval': Thay đổi sau mỗi khoảng thời gian nhất định 
-Config.RotationMode = 'daily'-- Nếu dùng chế độ 'interval', đặt số phút giữa mỗi lần thay đổi ở đây.
-Config.RotationIntervalMinutes = 120 -- Ví dụ: xe sẽ thay đổi sau mỗi 30 phút.
+Config.RotationMode = 'interval'-- Nếu dùng chế độ 'interval', đặt số phút giữa mỗi lần thay đổi ở đây.
+Config.RotationIntervalMinutes = 1 -- Ví dụ: xe sẽ thay đổi sau mỗi 30 phút.
 Config.UsingTarget = GetConvar('UseTarget', 'false') == 'false'
 Config.Commission = 0.10                              -- Percent that goes to sales person from a full car sale 10%               -- allow/prevent players from using /transfervehicle if financed
 Config.FilterByMake = false                           -- adds a make list before selecting category in shops

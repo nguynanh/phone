@@ -2191,35 +2191,12 @@ end)
 -- Thêm vào cuối file client/main.lua
 
 -- Callback mới để lấy danh sách XE MỚI từ qb-vehicleshop
+-- Thay thế callback 'GetNewVehicles' cũ của bạn trong /qb-phone/client/main.lua
 RegisterNUICallback('GetNewVehicles', function(_, cb)
-    -- LƯU Ý: Bạn cần đảm bảo 'qb-vehicleshop' có export 'GetVehicles'
-    -- hoặc một cách khác để truy cập danh sách xe trong showroom_state.
-    -- Dưới đây là một ví dụ, bạn có thể cần điều chỉnh cho phù hợp.
-    if exports['qb-vehicleshop'] then
-        local newVehicles = exports['qb-vehicleshop']:GetVehicles()
-        local formattedVehicles = {}
-        if newVehicles then
-            for _, vehicleData in pairs(newVehicles) do
-                -- Định dạng lại dữ liệu nếu cần để phù hợp với hàm SetupShowroomVehicles
-                table.insert(formattedVehicles, {
-                    name = vehicleData.name,
-                    model = vehicleData.model,
-                    price = vehicleData.price,
-                    category = vehicleData.category,
-                    plate = "XE MỚI", -- Hoặc một giá trị nhận diện khác
-                    sellerName = "Showroom",
-                    sellerPhone = "N/A",
-                    mods = {} -- Xe mới thường không có mods
-                })
-            end
-        end
-        cb(formattedVehicles)
-    else
-        QBCore.Functions.Notify("Không tìm thấy qb-vehicleshop", "error")
-        cb({})
-    end
+    QBCore.Functions.TriggerCallback('qb-phone:server:GetNewVehicles', function(vehicles)
+        cb(vehicles)
+    end)
 end)
-
 -- Callback mới để lấy danh sách XE BẠN ĐANG BÁN
 RegisterNUICallback('GetMySellingVehicles', function(_, cb)
     QBCore.Functions.TriggerCallback('qb-phone:server:GetMySellingVehicles', function(vehicles)

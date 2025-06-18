@@ -78,19 +78,26 @@ $(document).ready(function() {
         }
     });
     // Hàm thiết lập danh sách xe
-    SetupShowroomVehicles = function(vehicles) {
-        $(".showroom-vehicle-list").html("");
-        if (vehicles && vehicles.length > 0) {
-            vehicles.sort((a, b) => a.name.localeCompare(b.name));
-            $.each(vehicles, function(i, vehicleData) {
+    // Thay thế hàm cũ bằng hàm mới này trong /qb-phone/html/js/showroom.js
+// Thay thế hàm cũ bằng hàm mới này trong /qb-phone/html/js/showroom.js
+
+SetupShowroomVehicles = function(data) {
+    const listContainer = $(".showroom-vehicle-list");
+    listContainer.html(""); // Luôn xóa danh sách cũ
+
+    // Kiểm tra xem dữ liệu có phải là một danh sách phẳng (Array) hay không
+    if (Array.isArray(data)) {
+        // LOGIC CŨ: Dành cho "Xe Cũ" và "Xe Bạn Bán"
+        if (data && data.length > 0) {
+            data.sort((a, b) => a.name.localeCompare(b.name));
+            $.each(data, function(i, vehicleData) {
                 let model = vehicleData.model.toLowerCase();
                 let imageUrl = `https://docs.fivem.net/vehicles/${model}.webp`;
                 let vehicleImageHTML = `<img src="${imageUrl}" onerror="this.onerror=null; this.src='./img/default.png';">`;
                 const formattedPrice = vehicleData.price.toLocaleString('en-US');
 
-                // Thêm thông tin người bán vào card list
-                const sellerName = vehicleData.sellerName || 'Không xác định'; // Đảm bảo có giá trị mặc định
-                const sellerPhone = vehicleData.sellerPhone || 'Không xác định'; // Đảm bảo có giá trị mặc định
+                const sellerName = vehicleData.sellerName || 'Không xác định';
+                const sellerPhone = vehicleData.sellerPhone || 'Không xác định';
                 const sellerInfoHTML = `<div class="vehicle-info">Người bán: ${sellerName} (${sellerPhone})</div>`;
 
                 const element = `
@@ -102,13 +109,52 @@ $(document).ready(function() {
                             ${sellerInfoHTML}
                         </div>
                     </div>`;
-                $(".showroom-vehicle-list").append(element);
+                listContainer.append(element);
                 $(`[data-plate="${vehicleData.plate}"]`).data('VehicleData', vehicleData);
             });
         } else {
-            $(".showroom-vehicle-list").html("<p style='color: #8f8f8f; text-align: center; margin-top: 5vh;'>Showroom hiện không có xe nào.</p>");
+            listContainer.html("<p style='color: #8f8f8f; text-align: center; margin-top: 5vh;'>Showroom hiện không có xe nào.</p>");
+        }
+    } else {
+        // LOGIC MỚI: Dành cho "Xe Mới" (dữ liệu đã được phân loại theo shop)
+        if (data && Object.keys(data).length > 0) {
+            for (const shopName in data) {
+                if (data.hasOwnProperty(shopName)) {
+                    const vehicles = data[shopName];
+
+                    listContainer.append(`<div class="showroom-category-header">${shopName}</div>`);
+                    
+                    if (vehicles && vehicles.length > 0) {
+                        vehicles.sort((a, b) => a.name.localeCompare(b.name));
+                        $.each(vehicles, function(i, vehicleData) {
+                            let model = vehicleData.model.toLowerCase();
+                            let imageUrl = `https://docs.fivem.net/vehicles/${model}.webp`;
+                            let vehicleImageHTML = `<img src="${imageUrl}" onerror="this.onerror=null; this.src='./img/default.png';">`;
+                            const formattedPrice = vehicleData.price.toLocaleString('en-US');
+                            const sellerInfoHTML = `<div class="vehicle-info">Người bán: ${vehicleData.sellerName || 'Không xác định'}</div>`;
+
+                            const element = `
+                                <div class="showroom-card" data-plate="${vehicleData.plate}">
+                                    <div class="showroom-card-image">${vehicleImageHTML}</div>
+                                    <div class="showroom-card-details">
+                                        <div class="vehicle-name">${vehicleData.name}</div>
+                                        <div class="vehicle-info">Giá: $${formattedPrice}</div>
+                                        ${sellerInfoHTML}
+                                    </div>
+                                </div>`;
+                            listContainer.append(element);
+                            $(`[data-plate="${vehicleData.plate}"]`).data('VehicleData', vehicleData);
+                        });
+                    } else {
+                         listContainer.append(`<p class="no-vehicles-in-shop">Cửa hàng này hiện không có xe.</p>`);
+                    }
+                }
+            }
+        } else {
+            listContainer.html("<p style='color: #8f8f8f; text-align: center; margin-top: 5vh;'>Showroom hiện không có xe nào.</p>");
         }
     }
+}
 
     // Xử lý sự kiện khi bấm vào xe để xem chi tiết
     $(document).on('click', '.showroom-card', function(e){

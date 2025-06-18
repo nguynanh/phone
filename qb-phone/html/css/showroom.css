@@ -352,3 +352,28 @@
     top: 21vh; /* Tăng giá trị top để có không gian cho các tab */
     height: calc(100% - 21vh - 40px);
 }
+/* Thêm vào cuối file /qb-phone/html/css/showroom.css */
+
+.showroom-category-header {
+    width: 100%;
+    padding: 1vh 1.5vh;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-size: 1.5vh;
+    font-weight: bold;
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Thêm lề cho thẻ xe đầu tiên trong mỗi danh mục */
+.showroom-category-header + .showroom-card {
+    margin-top: 0;
+}
+
+.no-vehicles-in-shop {
+    color: #8f8f8f;
+    text-align: center;
+    padding: 2vh 0;
+}

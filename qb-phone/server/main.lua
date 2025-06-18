@@ -1099,17 +1099,57 @@ end)
 
 -- Thêm vào cuối file server/main.lua
 
+-- Thay thế callback cũ bằng callback này trong /qb-phone/server/main.lua
+
 QBCore.Functions.CreateCallback("qb-phone:server:GetMySellingVehicles", function(source, cb)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then cb({}) return end
 
-    -- LƯU Ý QUAN TRỌNG:
-    -- Đoạn truy vấn SQL dưới đây là một VÍ DỤ. Bạn phải thay thế 'vehicles_for_sale'
-    -- bằng tên bảng thực tế mà script bán xe của bạn sử dụng, và 'citizenid'
-    -- bằng tên cột chứa citizenid của người bán.
-    local query = 'SELECT * FROM vehicles_for_sale WHERE citizenid = ?' -- <--- THAY ĐỔI TÊN BẢNG VÀ CỘT NẾU CẦN
+    -- Đã cập nhật ĐÚNG tên bảng và tên cột người bán theo hình ảnh bạn cung cấp
+    local query = 'SELECT * FROM `occasion_vehicles` WHERE `seller` = ?'
     
     local myVehicles = MySQL.query.await(query, { Player.PlayerData.citizenid })
     
     cb(myVehicles)
+end)
+-- Thay thế callback cũ bằng callback này trong /qb-phone/server/main.lua
+QBCore.Functions.CreateCallback("qb-phone:server:GetNewVehicles", function(source, cb)
+    local showroomState = exports['qb-vehicleshop']:GetShowroomState()
+    local vehicleShopConfig = exports['qb-vehicleshop']:GetShowroomConfig()
+    -- Khởi tạo newVehicles là một bảng (để chứa các cặp key-value)
+    local newVehicles = {}
+
+    if showroomState and vehicleShopConfig and next(showroomState) then
+        for shopName, shopSlots in pairs(showroomState) do
+            if vehicleShopConfig[shopName] and vehicleShopConfig[shopName].enabled then
+                local shopLabel = vehicleShopConfig[shopName].ShopLabel or shopName
+                
+                -- Nếu chưa có key cho shop này, tạo một bảng rỗng
+                if not newVehicles[shopLabel] then
+                    newVehicles[shopLabel] = {}
+                end
+
+                for slotId, vehicleModel in pairs(shopSlots) do
+                    local vehicleInfo = QBCore.Shared.Vehicles[vehicleModel]
+                    if vehicleInfo then
+                        local dynamicPrice = exports['qb-vehicleshop']:getVehiclePrice(vehicleModel) or vehicleInfo.price
+                        
+                        -- Thêm xe vào đúng shop của nó
+                        table.insert(newVehicles[shopLabel], {
+                            name = vehicleInfo.name,
+                            model = vehicleModel,
+                            price = dynamicPrice,
+                            category = vehicleInfo.category or 'Không xác định',
+                            plate = "XE MỚI-" .. math.random(1000, 9999),
+                            sellerName = shopLabel,
+                            sellerPhone = "N/A",
+                            mods = {}
+                        })
+                    end
+                end
+            end
+        end
+    end
+
+    cb(newVehicles)
 end)
