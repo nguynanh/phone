@@ -1096,3 +1096,20 @@ QBCore.Commands.Add('bill', 'Bill A Player', { { name = 'id', help = 'Player ID'
         TriggerClientEvent('QBCore:Notify', source, 'No Access', 'error')
     end
 end)
+
+-- Thêm vào cuối file server/main.lua
+
+QBCore.Functions.CreateCallback("qb-phone:server:GetMySellingVehicles", function(source, cb)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if not Player then cb({}) return end
+
+    -- LƯU Ý QUAN TRỌNG:
+    -- Đoạn truy vấn SQL dưới đây là một VÍ DỤ. Bạn phải thay thế 'vehicles_for_sale'
+    -- bằng tên bảng thực tế mà script bán xe của bạn sử dụng, và 'citizenid'
+    -- bằng tên cột chứa citizenid của người bán.
+    local query = 'SELECT * FROM vehicles_for_sale WHERE citizenid = ?' -- <--- THAY ĐỔI TÊN BẢNG VÀ CỘT NẾU CẦN
+    
+    local myVehicles = MySQL.query.await(query, { Player.PlayerData.citizenid })
+    
+    cb(myVehicles)
+end)

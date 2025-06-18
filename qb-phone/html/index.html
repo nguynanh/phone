@@ -473,37 +473,46 @@
                     </div>
 
                     <div class="showroom-app">
-                        <div class="showroom-app-header">
-                            <p>Showroom</p>
-                            <div class="showroom-search-icon"><i class="fas fa-search"></i></div>
+                    <div class="showroom-app-header">
+                       <p>Showroom</p>
+                       <div class="showroom-search-icon"><i class="fas fa-search"></i></div>
+                    </div>
+
+                    <div class="showroom-tabs-container">
+                        <div class="showroom-tab selected" data-category="used">Xe Cũ</div>
+                        <div class="showroom-tab" data-category="new">Xe Mới</div>
+                        <div class="showroom-tab" data-category="selling">Xe Bạn Bán</div>
+                    </div>
+
+                    <div class="showroom-search">
+                        <input type="text" id="showroom-search-input" placeholder="Tìm kiếm xe..." spellcheck="false">
+                    </div>
+
+                    <div class="showroom-vehicle-list">
                         </div>
-                        <div class="showroom-search">
-                            <input type="text" id="showroom-search-input" placeholder="Tìm kiếm xe..." spellcheck="false">
+
+                    <div id="showroom-vehicle-detail-view" style="display: none;">
+                        <div class="showroom-detail-header">
+                            <i class="fas fa-arrow-left" id="showroom-detail-back-button"></i>
+                            <p id="detail-vehicle-name-showroom">Vehicle Name</p>
                         </div>
-                        <div class="showroom-vehicle-list">
+                        <div class="showroom-detail-image">
+                            <img id="detail-vehicle-image-showroom" src="" alt="Vehicle Image">
                         </div>
-                        <div id="showroom-vehicle-detail-view" style="display: none;">
-                            <div class="showroom-detail-header">
-                                <i class="fas fa-arrow-left" id="showroom-detail-back-button"></i>
-                                <p id="detail-vehicle-name-showroom">Vehicle Name</p>
-                            </div>
-                            <div class="showroom-detail-image">
-                                <img id="detail-vehicle-image-showroom" src="" alt="Vehicle Image">
-                            </div>
-                            <div class="showroom-detail-info">
-                              <p><strong>Loại xe:</strong> <span id="detail-vehicle-category-showroom">N/A</span></p>
-                              <p><strong>Giá bán:</strong> <span id="detail-vehicle-price-showroom">N/A</span></p>
-                              <p><strong>Người bán:</strong> <span id="detail-vehicle-seller-name-showroom">N/A</span></p>
-                              <p><strong>SĐT người bán:</strong> <span id="detail-vehicle-seller-phone-showroom">N/A</span></p>
-                              <p><strong>Mô tả:</strong> <span id="detail-vehicle-description-showroom" class="vehicle-description">Không có mô tả.</span></p>
-                              <div class="showroom-detail-mods-container">
-                                 <p><strong>Thông số đồ độ:</strong></p>
-                                 <div id="detail-vehicle-mods-list-showroom">
-                                    </div>
-                              </div>
+                        <div class="showroom-detail-info">
+                            <p><strong>Loại xe:</strong> <span id="detail-vehicle-category-showroom">N/A</span></p>
+                            <p><strong>Giá bán:</strong> <span id="detail-vehicle-price-showroom">N/A</span></p>
+                            <p><strong>Người bán:</strong> <span id="detail-vehicle-seller-name-showroom">N/A</span></p>
+                            <p><strong>SĐT người bán:</strong> <span id="detail-vehicle-seller-phone-showroom">N/A</span></p>
+                            <p><strong>Mô tả:</strong> <span id="detail-vehicle-description-showroom" class="vehicle-description">Không có mô tả.</span></p>
+                            <div class="showroom-detail-mods-container">
+                                <p><strong>Thông số đồ độ:</strong></p>
+                                <div id="detail-vehicle-mods-list-showroom">
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
                     <div class="camera-app">
                         <div class="camera-homescreen">
                             <div class="camera-image">

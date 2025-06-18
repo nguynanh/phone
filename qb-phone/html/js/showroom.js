@@ -2,6 +2,7 @@
 
 var ShowroomSearchActive = false; // Biến để theo dõi trạng thái thanh tìm kiếm
 var OpenedVehicleDetail = null; // Biến để theo dõi xe đang được xem chi tiết
+var CurrentShowroomCategory = 'used'
 
 $(document).ready(function() {
     // Khai báo các hằng số để xử lý đồ độ
@@ -44,6 +45,38 @@ $(document).ready(function() {
         }
     });
 
+        $(document).on('click', '.showroom-tab', function(e) {
+        e.preventDefault();
+        const category = $(this).data('category');
+
+        if (category !== CurrentShowroomCategory) {
+            // Cập nhật trạng thái 'selected' cho tab
+            $('.showroom-tab').removeClass('selected');
+            $(this).addClass('selected');
+            CurrentShowroomCategory = category;
+
+            // Xóa danh sách xe hiện tại
+            $(".showroom-vehicle-list").html("<p style='color: #8f8f8f; text-align: center; margin-top: 5vh;'>Đang tải...</p>");
+
+            // Gọi callback tương ứng với category
+            if (category === 'used') {
+                // Sử dụng lại callback cũ cho xe cũ
+                $.post('https://qb-phone/GetSalesVehicles', JSON.stringify({}), function(vehicles){
+                    SetupShowroomVehicles(vehicles);
+                });
+            } else if (category === 'new') {
+                // Callback mới cho xe mới
+                $.post('https://qb-phone/GetNewVehicles', JSON.stringify({}), function(vehicles){
+                    SetupShowroomVehicles(vehicles); // Có thể tái sử dụng hàm này
+                });
+            } else if (category === 'selling') {
+                // Callback mới cho xe bạn bán
+                $.post('https://qb-phone/GetMySellingVehicles', JSON.stringify({}), function(vehicles){
+                    SetupShowroomVehicles(vehicles);
+                });
+            }
+        }
+    });
     // Hàm thiết lập danh sách xe
     SetupShowroomVehicles = function(vehicles) {
         $(".showroom-vehicle-list").html("");

@@ -314,3 +314,41 @@
 #showroom-vehicle-detail-view .showroom-detail-info strong {
     color: #b0c4de; /* Màu khác cho tiêu đề mạnh */
 }
+/* Thêm vào cuối file html/css/showroom.css */
+.showroom-tabs-container {
+    display: flex;
+    justify-content: space-around;
+    width: 90%;
+    margin: 1vh auto 1.5vh auto;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    padding: 0.5vh;
+}
+
+.showroom-tab {
+    flex-grow: 1;
+    text-align: center;
+    padding: 1vh;
+    font-size: 1.4vh;
+    color: #a0a0a0;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.showroom-tab:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.showroom-tab.selected {
+    background-color: #4A90E2; /* Màu xanh từ config */
+    color: white;
+    font-weight: bold;
+}
+
+/* Điều chỉnh lại vị trí của danh sách xe */
+.showroom-vehicle-list {
+    top: 21vh; /* Tăng giá trị top để có không gian cho các tab */
+    height: calc(100% - 21vh - 40px);
+}
