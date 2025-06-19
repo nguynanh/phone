@@ -3,7 +3,7 @@ Config.EnableAutoRotation = true -- Đặt là true để bật tính năng tự
 -- 'daily': Thay đổi vào lúc 2 giờ sáng mỗi ngày.
 -- 'interval': Thay đổi sau mỗi khoảng thời gian nhất định 
 Config.RotationMode = 'interval'-- Nếu dùng chế độ 'interval', đặt số phút giữa mỗi lần thay đổi ở đây.
-Config.RotationIntervalMinutes = 1 -- Ví dụ: xe sẽ thay đổi sau mỗi 30 phút.
+Config.RotationIntervalMinutes = 1001 -- Ví dụ: xe sẽ thay đổi sau mỗi 30 phút.
 Config.UsingTarget = GetConvar('UseTarget', 'false') == 'false'
 Config.Commission = 0.10                              -- Percent that goes to sales person from a full car sale 10%               -- allow/prevent players from using /transfervehicle if financed
 Config.FilterByMake = false                           -- adds a make list before selecting category in shops
@@ -75,54 +75,49 @@ Config.Shops = {
         ['Type'] = 'free-use', -- meaning a real player has to sell the car
         ['Zone'] = {
             ['Shape'] = {
-                vector2(-1260.6973876953, -349.21334838867),
-                vector2(-1268.6248779297, -352.87365722656),
-                vector2(-1274.1533203125, -358.29794311523),    
-                vector2(-1273.8425292969, -362.73715209961),
-                vector2(-1270.5701904297, -368.6716003418),
-                vector2(-1266.0561523438, -375.14080810547),
-                vector2(-1244.3684082031, -362.70278930664),
-                vector2(-1249.8704833984, -352.03326416016),
-                vector2(-1252.9503173828, -345.85726928711)
+                vector2(-180.26, -1159.37),
+                vector2(-180.84, -1177.36),
+                vector2(-162.21, -1177.34),    
+                vector2(-161.86, -1159.5)
             },
-            ['minZ'] = 36.646457672119,
-            ['maxZ'] = 37.516143798828,
+            ['minZ'] = 22.646457672119,
+            ['maxZ'] = 23.516143798828,
             ['size'] = 2.75    -- size of the vehicles zones
         },
         ['Job'] = 'none', -- Name of job or none
         ['ShopLabel'] = 'Luxury Vehicle Shop',
         ['showBlip'] = true,   -- true or false
         ['blipSprite'] = 326,  -- Blip sprite
-        ['blipColor'] = 3,     -- Blip color
+        ['blipColor'] = 50,     -- Blip color
         ['TestDriveTimeLimit'] = 0.5,
-        ['Location'] = vector3(-1255.6, -361.16, 36.91),
-        ['ReturnLocation'] = vector3(-1231.46, -349.86, 37.33),
-        ['VehicleSpawn'] = vector4(-1231.46, -349.86, 37.33, 26.61),
-        ['TestDriveSpawn'] = vector4(-1232.81, -347.99, 37.33, 23.28), -- Spawn location for test drive
-        ['FinanceZone'] = vector3(-1256.18, -368.23, 36.91),
+        ['Location'] = vector3(-179.67, -1171.37, 22.94),
+        ['ReturnLocation'] = vector3(-199.21, -1182.55, 22.96),
+        ['VehicleSpawn'] = vector4(-177.49, -1183.21, 23.13, 269.01),
+        ['TestDriveSpawn'] = vector4(-157.65, -1165.52, 23.71, 359.46), -- Spawn location for test drive
+        ['FinanceZone'] = vector3(-204.2, -1172.3, 23.76),
         ['ShowroomVehicles'] = {
             [1] = {
-                coords = vector4(-1265.31, -354.44, 35.91, 205.08),
+                coords = vector4(-176.74, -1162.2, 22.62, 219.82),
                 defaultVehicle = 'italirsx',
                 chosenVehicle = 'italirsx'
             },
             [2] = {
-                coords = vector4(-1270.06, -358.55, 35.91, 247.08),
+                coords = vector4(-170.58, -1162.14, 22.62, 219.42),
                 defaultVehicle = 'italigtb',
                 chosenVehicle = 'italigtb'
             },
             [3] = {
-                coords = vector4(-1269.21, -365.03, 35.91, 297.12),
+                coords = vector4(-164.53, -1162.16, 22.62, 219.02),
                 defaultVehicle = 'nero',
                 chosenVehicle = 'nero'
             },
             [4] = {
-                coords = vector4(-1255.49, -365.91, 35.91, 55.63),
+                coords = vector4(-164.45, -1168.45, 22.62, 90.06),
                 defaultVehicle = 'adder',
                 chosenVehicle = 'adder'
             },
             [5] = {
-                coords = vector4(-1249.21, -362.97, 35.91, 53.24),
+                coords = vector4(-164.79, -1174.83, 22.62, 49.19),
                 defaultVehicle = 'fmj',
                 chosenVehicle = 'fmj'
             },
